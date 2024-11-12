@@ -1,0 +1,97 @@
+[project]
+name = "app"
+version = "0.0.0"
+description = "Chat with Modal's docs in GitHub Copilot Extensions."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "beautifulsoup4>=4.12.3",
+    "fastapi>=0.115.2",
+    "githubkit>=0.11.14",
+    "httpx>=0.27.2",
+    "langchain-community>=0.3.5",
+    "langchain-openai>=0.2.6",
+    "modal>=0.64.186",
+    "pydantic-settings>=2.5.2",
+    "structlog>=24.4.0",
+    "usearch>=2.16.2",
+    "uvicorn>=0.32.0",
+]
+
+[project.urls]
+Home = "https://github.com/anthonycorletti/modal-docs-copilot-extension"
+
+# uv
+[tool.uv]
+dev-dependencies = [
+    "asgi-lifespan>=2.1.0",
+    "coverage>=7.6.4",
+    "greenlet>=3.1.1",
+    "mypy>=1.12.0",
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "rich>=13.9.2",
+    "ruff>=0.6.9",
+    "toml>=0.10.2",
+    "types-toml>=0.10.8.20240310",
+]
+
+# ruff
+[tool.ruff]
+line-length = 88
+include = ["*.py"]
+exclude = ["dist", "build", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+pydocstyle = { convention = "google" }
+
+# mypy
+[tool.mypy]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+exclude = ["dist", "build", ".venv"]
+
+# setuptools
+[tool.setuptools.package-data]
+app = ["py.typed"]
+
+[tool.setuptools.dynamic.version]
+attr = "app.__version__"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+# pytest
+[tool.pytest.ini_options]
+addopts = [
+    "-o",
+    "console_output_style=progress",
+    "--asyncio-mode=auto",
+    "--disable-warnings",
+    "--showlocals",
+    "--cov=app",
+    "--cov=tests",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--cov-report=html",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+# coverage
+[tool.coverage.run]
+parallel = true
+source = ["app", "tests"]
+omit = ["*__init__.py", "app/_modal.py"]
+concurrency = ["thread", "greenlet", "multiprocessing"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover"]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
